@@ -31,6 +31,8 @@ This approach offers several advantages:
 - More flexible implementation of undo/redo operations
 - Cleaner, more maintainable code
 
+We can see the implementation of this in example-after.ts.
+
 ## Helpful Links
 
 https://refactoring.guru/design-patterns/memento
