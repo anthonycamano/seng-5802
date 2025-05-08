@@ -16,7 +16,7 @@ var Material = /** @class */ (function () {
     Object.defineProperty(Material.prototype, "setName", {
         set: function (name) {
             // Save current state before modification
-            this.saveState();
+            this.saveSnapshot();
             this._name = name;
         },
         enumerable: false,
@@ -32,7 +32,7 @@ var Material = /** @class */ (function () {
     Object.defineProperty(Material.prototype, "setDensity", {
         set: function (density) {
             // Save current state before modification
-            this.saveState();
+            this.saveSnapshot();
             this._density = density;
         },
         enumerable: false,
@@ -48,7 +48,7 @@ var Material = /** @class */ (function () {
     Object.defineProperty(Material.prototype, "setColor", {
         set: function (color) {
             // Save current state before modification
-            this.saveState();
+            this.saveSnapshot();
             this._color = color;
         },
         enumerable: false,
@@ -60,7 +60,7 @@ var Material = /** @class */ (function () {
     Object.defineProperty(Material.prototype, "setTransparent", {
         set: function (transparent) {
             // Save current state before modification
-            this.saveState();
+            this.saveSnapshot();
             this._transparent = transparent;
         },
         enumerable: false,
@@ -70,7 +70,7 @@ var Material = /** @class */ (function () {
         return "Material: ".concat(this._name, ", Density: ").concat(this._density, ", Color: ").concat(this._color, ", Transparent: ").concat(this._transparent);
     };
     // Private helper to save the current state
-    Material.prototype.saveState = function () {
+    Material.prototype.saveSnapshot = function () {
         this._history.push({
             name: this._name,
             density: this._density,
@@ -123,7 +123,6 @@ var MaterialForm = /** @class */ (function () {
     // Add undo functionality to the form
     MaterialForm.prototype.undo = function () {
         if (this.material.undo()) {
-            console.log("Undone last change. Current state:");
             this.displayMaterial();
         }
     };
@@ -148,7 +147,7 @@ function mainWithUndo() {
     form.undo();
     console.log("\nUndoing another change (name change):");
     form.undo();
-    console.log("\nTrying to undo again (should show 'Nothing to undo'):");
+    console.log("\nTrying to undo again (no more to undo):");
     form.undo();
 }
 mainWithUndo();

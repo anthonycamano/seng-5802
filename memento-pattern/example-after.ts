@@ -232,7 +232,7 @@ class MaterialFormAfter {
 	}
 
 	displayMaterial(): void {
-		console.log(this._material.toString());
+		console.log(this._material.description());
 	}
 }
 
