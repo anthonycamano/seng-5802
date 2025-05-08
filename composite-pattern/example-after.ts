@@ -34,6 +34,25 @@ class SingleRide implements RideComponent {
 	}
 }
 
+// Leaf: Specific ride pricing adjustments
+class RideSurcharge implements RideComponent {
+	private amount: number;
+	private reason: string;
+
+	constructor(reason: string, amount: number) {
+		this.reason = reason;
+		this.amount = amount;
+	}
+
+	calculateFare(): number {
+		return this.amount;
+	}
+
+	getDescription(): string {
+		return `${this.reason} ($${this.amount.toFixed(2)})`;
+	}
+}
+
 // Composite: Can contain other components (both SingleRide and other CompositeRides)
 class CompositeRide implements RideComponent {
 	private components: RideComponent[] = [];
@@ -72,26 +91,6 @@ class CompositeRide implements RideComponent {
 	}
 }
 
-// Leaf: Specific ride pricing adjustments
-class RideSurcharge implements RideComponent {
-	private amount: number;
-	private reason: string;
-
-	constructor(reason: string, amount: number) {
-		this.reason = reason;
-		this.amount = amount;
-	}
-
-	calculateFare(): number {
-		return this.amount;
-	}
-
-	getDescription(): string {
-		return `${this.reason} ($${this.amount.toFixed(2)})`;
-	}
-}
-
-// Client code that uses the composite pattern
 function mainWithComposite() {
 	// Create individual ride types
 	const uberX = new SingleRide(RideType.UberX, 10, 2.5, 1.5); // 10km ride
@@ -117,7 +116,6 @@ function mainWithComposite() {
 	corporatePackage.add(premiumAirportRide);
 
 	// How different scenarios may play out
-
 	// Leaf: UberX
 	console.log(`UberX Fare: $${uberX.calculateFare().toFixed(2)}`);
 	console.log(`UberX Description: ${uberX.getDescription()}`);
