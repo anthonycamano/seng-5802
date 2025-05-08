@@ -38,6 +38,6 @@ The implementation of the composite pattern can be seen in example-after.ts. The
 
 ## Helpful links
 
-https://www.youtube.com/watch?v=oo9AsGqnisk
-
 https://refactoring.guru/design-patterns/composite
+
+https://www.youtube.com/watch?v=oo9AsGqnisk

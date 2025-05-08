@@ -36,7 +36,7 @@ class MaterialMemento {
 }
 
 // Originator: The Material class that creates a memento containing a snapshot of its current state
-class MaterialAfter {
+class MaterialNew {
 	private name: string;
 	private density: number;
 	private color: string;
@@ -158,10 +158,10 @@ class MementoHistory {
 }
 
 class MaterialFormAfter {
-	private material: MaterialAfter;
+	private material: MaterialNew;
 	private history: MementoHistory;
 
-	constructor(material: MaterialAfter) {
+	constructor(material: MaterialNew) {
 		this.material = material;
 		this.history = new MementoHistory();
 
@@ -237,7 +237,7 @@ class MaterialFormAfter {
 }
 
 function mainWithMemento() {
-	const glass = new MaterialAfter("Glass", 2.5, "Clear", true);
+	const glass = new MaterialNew("Glass", 2.5, "Clear", true);
 	const form = new MaterialFormAfter(glass);
 
 	// User makes changes
