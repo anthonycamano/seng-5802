@@ -24,14 +24,14 @@ There are many situations when you want to be able to undo and redo, a really co
 
 A better solution would be to implement the memento design pattern.
 
-This approach offers several advantages:
+We can see the implementation of this in example-after.ts. We start with the creating MaterialMemento class that takes the role of the memento in the pattern. The main responsibilty of this class is to store the state of the Material. We also have a Material class, that takes up the role of the originator in the pattern, whose role is to do a lot of the base functionality of a material (get + set data) while also saving and restoring mementos. Then we also have MementoHistory class that acts as the caretaker. The main responsibility of this class is to handle the logic for managing the history of the mementos (undo, redo, adding to history, + checks). And similar to the original implementation, we have a MaterialForm class that is what the client interacts with and has all the functionality abstracted away into the other classes.
+
+This approach offers the following advantages:
 
 - Better separation of concerns
 - Enhanced encapsulation (the Memento's state is only accessible to the Originator)
 - More flexible implementation of undo/redo operations
 - Cleaner, more maintainable code
-
-We can see the implementation of this in example-after.ts.
 
 ## Helpful Links
 

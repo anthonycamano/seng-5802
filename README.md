@@ -6,7 +6,7 @@ run: npm install typescript
 
 ### Then compile ts file into js
 
-run tsc <ts file-path>
+run: tsc <ts file-path>
 
 ### Finally, run using node
 
