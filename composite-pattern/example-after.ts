@@ -1,9 +1,4 @@
-enum RideType {
-	UberX = "UberX",
-	UberBlack = "UberBlack",
-	UberPool = "UberPool",
-	UberXL = "UberXL",
-}
+import { RideType } from "./shared";
 
 // Component: The base interface for all ride components
 interface RideComponent {
