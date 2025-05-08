@@ -1,9 +1,9 @@
 // Memento: Stores the internal state of the Material object
 class MaterialMemento {
-	private name: string;
-	private density: number;
-	private color: string;
-	private transparent: boolean;
+	private _name: string;
+	private _density: number;
+	private _color: string;
+	private _transparent: boolean;
 
 	constructor(
 		name: string,
@@ -11,36 +11,36 @@ class MaterialMemento {
 		color: string,
 		transparent: boolean
 	) {
-		this.name = name;
-		this.density = density;
-		this.color = color;
-		this.transparent = transparent;
+		this._name = name;
+		this._density = density;
+		this._color = color;
+		this._transparent = transparent;
 	}
 
 	// Getters for the stored state (only accessible to the Originator)
 	getName(): string {
-		return this.name;
+		return this._name;
 	}
 
 	getDensity(): number {
-		return this.density;
+		return this._density;
 	}
 
 	getColor(): string {
-		return this.color;
+		return this._color;
 	}
 
 	isTransparent(): boolean {
-		return this.transparent;
+		return this._transparent;
 	}
 }
 
 // Originator: The Material class that creates a memento containing a snapshot of its current state
 class MaterialNew {
-	private name: string;
-	private density: number;
-	private color: string;
-	private transparent: boolean;
+	private _name: string;
+	private _density: number;
+	private _color: string;
+	private _transparent: boolean;
 
 	constructor(
 		name: string,
@@ -48,122 +48,122 @@ class MaterialNew {
 		color: string,
 		transparent: boolean
 	) {
-		this.name = name;
-		this.density = density;
-		this.color = color;
-		this.transparent = transparent;
+		this._name = name;
+		this._density = density;
+		this._color = color;
+		this._transparent = transparent;
 	}
 
 	// Save current state into a memento
 	saveToMemento(): MaterialMemento {
 		return new MaterialMemento(
-			this.name,
-			this.density,
-			this.color,
-			this.transparent
+			this._name,
+			this._density,
+			this._color,
+			this._transparent
 		);
 	}
 
 	// Restore state from a memento
 	restoreFromMemento(memento: MaterialMemento): void {
-		this.name = memento.getName();
-		this.density = memento.getDensity();
-		this.color = memento.getColor();
-		this.transparent = memento.isTransparent();
+		this._name = memento.getName();
+		this._density = memento.getDensity();
+		this._color = memento.getColor();
+		this._transparent = memento.isTransparent();
 	}
 
 	// Getters and setters
-	getName(): string {
-		return this.name;
+	get getName(): string {
+		return this._name;
 	}
 
-	setName(name: string): void {
-		this.name = name;
+	set setName(name: string) {
+		this._name = name;
 	}
 
-	getDensity(): number {
-		return this.density;
+	get getDensity(): number {
+		return this._density;
 	}
 
-	setDensity(density: number): void {
-		this.density = density;
+	set setDensity(density: number) {
+		this._density = density;
 	}
 
-	getColor(): string {
-		return this.color;
+	get getColor(): string {
+		return this._color;
 	}
 
-	setColor(color: string): void {
-		this.color = color;
+	set setColor(color: string) {
+		this._color = color;
 	}
 
-	isTransparent(): boolean {
-		return this.transparent;
+	get isTransparent(): boolean {
+		return this._transparent;
 	}
 
-	setTransparent(transparent: boolean): void {
-		this.transparent = transparent;
+	set setTransparent(transparent: boolean) {
+		this._transparent = transparent;
 	}
 
-	toString(): string {
-		return `Material: ${this.name}, Density: ${this.density}, Color: ${this.color}, Transparent: ${this.transparent}`;
+	description(): string {
+		return `Material: ${this._name}, Density: ${this._density}, Color: ${this._color}, Transparent: ${this._transparent}`;
 	}
 }
 
 // Caretaker: Manages the history of mementos
 class MementoHistory {
-	private mementos: MaterialMemento[] = [];
-	private currentIndex: number = -1;
+	private _mementos: MaterialMemento[] = [];
+	private _currentIndex: number = -1;
 
 	// Add a memento to history
 	push(memento: MaterialMemento): void {
 		// If we're not at the end of the history, truncate the history
-		if (this.currentIndex < this.mementos.length - 1) {
-			this.mementos = this.mementos.slice(0, this.currentIndex + 1);
+		if (this._currentIndex < this._mementos.length - 1) {
+			this._mementos = this._mementos.slice(0, this._currentIndex + 1);
 		}
 
-		this.mementos.push(memento);
-		this.currentIndex = this.mementos.length - 1;
+		this._mementos.push(memento);
+		this._currentIndex = this._mementos.length - 1;
 	}
 
 	// Get the previous memento (for undo)
 	undo(): MaterialMemento | null {
-		if (this.currentIndex <= 0) {
+		if (this._currentIndex <= 0) {
 			return null;
 		}
 
-		this.currentIndex--;
-		return this.mementos[this.currentIndex];
+		this._currentIndex--;
+		return this._mementos[this._currentIndex];
 	}
 
 	// Get the next memento (for redo)
 	redo(): MaterialMemento | null {
-		if (this.currentIndex >= this.mementos.length - 1) {
+		if (this._currentIndex >= this._mementos.length - 1) {
 			return null;
 		}
 
-		this.currentIndex++;
-		return this.mementos[this.currentIndex];
+		this._currentIndex++;
+		return this._mementos[this._currentIndex];
 	}
 
 	// Check if undo is available
 	canUndo(): boolean {
-		return this.currentIndex > 0;
+		return this._currentIndex > 0;
 	}
 
 	// Check if redo is available
 	canRedo(): boolean {
-		return this.currentIndex < this.mementos.length - 1;
+		return this._currentIndex < this._mementos.length - 1;
 	}
 }
 
 class MaterialFormAfter {
-	private material: MaterialNew;
-	private history: MementoHistory;
+	private _material: MaterialNew;
+	private _history: MementoHistory;
 
 	constructor(material: MaterialNew) {
-		this.material = material;
-		this.history = new MementoHistory();
+		this._material = material;
+		this._history = new MementoHistory();
 
 		// Save the initial state
 		this.saveState();
@@ -171,44 +171,44 @@ class MaterialFormAfter {
 
 	// Save the current state to history
 	private saveState(): void {
-		this.history.push(this.material.saveToMemento());
+		this._history.push(this._material.saveToMemento());
 	}
 
 	// Update methods now save state after changes
 	updateName(name: string): void {
-		this.material.setName(name);
+		this._material.setName = name;
 		console.log(`Updated name to: ${name}`);
 		this.saveState();
 	}
 
 	updateDensity(density: number): void {
-		this.material.setDensity(density);
+		this._material.setDensity = density;
 		console.log(`Updated density to: ${density}`);
 		this.saveState();
 	}
 
 	updateColor(color: string): void {
-		this.material.setColor(color);
+		this._material.setColor = color;
 		console.log(`Updated color to: ${color}`);
 		this.saveState();
 	}
 
 	updateTransparency(transparent: boolean): void {
-		this.material.setTransparent(transparent);
+		this._material.setTransparent = transparent;
 		console.log(`Updated transparency to: ${transparent}`);
 		this.saveState();
 	}
 
 	// Undo the last change
 	undo(): boolean {
-		if (!this.history.canUndo()) {
+		if (!this._history.canUndo()) {
 			console.log("Nothing to undo");
 			return false;
 		}
 
-		const memento = this.history.undo();
+		const memento = this._history.undo();
 		if (memento) {
-			this.material.restoreFromMemento(memento);
+			this._material.restoreFromMemento(memento);
 			console.log("Undo successful");
 			return true;
 		}
@@ -217,14 +217,14 @@ class MaterialFormAfter {
 
 	// Redo the last undone change
 	redo(): boolean {
-		if (!this.history.canRedo()) {
+		if (!this._history.canRedo()) {
 			console.log("Nothing to redo");
 			return false;
 		}
 
-		const memento = this.history.redo();
+		const memento = this._history.redo();
 		if (memento) {
-			this.material.restoreFromMemento(memento);
+			this._material.restoreFromMemento(memento);
 			console.log("Redo successful");
 			return true;
 		}
@@ -232,7 +232,7 @@ class MaterialFormAfter {
 	}
 
 	displayMaterial(): void {
-		console.log(this.material.toString());
+		console.log(this._material.toString());
 	}
 }
 

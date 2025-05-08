@@ -27,7 +27,7 @@ class Material {
 	}
 	set setName(name: string) {
 		// Save current state before modification
-		this.saveState();
+		this.saveSnapshot();
 		this._name = name;
 	}
 
@@ -36,7 +36,7 @@ class Material {
 	}
 	set setDensity(density: number) {
 		// Save current state before modification
-		this.saveState();
+		this.saveSnapshot();
 		this._density = density;
 	}
 
@@ -45,7 +45,7 @@ class Material {
 	}
 	set setColor(color: string) {
 		// Save current state before modification
-		this.saveState();
+		this.saveSnapshot();
 		this._color = color;
 	}
 
@@ -54,7 +54,7 @@ class Material {
 	}
 	set setTransparent(transparent: boolean) {
 		// Save current state before modification
-		this.saveState();
+		this.saveSnapshot();
 		this._transparent = transparent;
 	}
 
@@ -63,7 +63,7 @@ class Material {
 	}
 
 	// Private helper to save the current state
-	private saveState(): void {
+	private saveSnapshot(): void {
 		this._history.push({
 			name: this._name,
 			density: this._density,
@@ -81,6 +81,7 @@ class Material {
 	undo(): boolean {
 		if (this._history.length === 0) {
 			console.log("Nothing to undo!");
+
 			return false;
 		}
 
@@ -90,7 +91,6 @@ class Material {
 		this._color = previousState!.color;
 		this._transparent = previousState!.transparent;
 
-		console.log("Last change undone!");
 		return true;
 	}
 }
@@ -129,7 +129,6 @@ class MaterialForm {
 	// Add undo functionality to the form
 	undo(): void {
 		if (this.material.undo()) {
-			console.log("Undone last change. Current state:");
 			this.displayMaterial();
 		}
 	}
@@ -151,7 +150,7 @@ function mainWithUndo() {
 	console.log("\nAfter changes:");
 	form.displayMaterial();
 
-	// Now user can undo changes
+	// User can undo changes, but NOT redo
 	console.log("\nUndoing last change (color change):");
 	form.undo();
 
@@ -161,7 +160,7 @@ function mainWithUndo() {
 	console.log("\nUndoing another change (name change):");
 	form.undo();
 
-	console.log("\nTrying to undo again (should show 'Nothing to undo'):");
+	console.log("\nTrying to undo again (no more to undo):");
 	form.undo();
 }
 
