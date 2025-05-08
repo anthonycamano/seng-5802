@@ -1,3 +1,5 @@
+import { RideType } from "./shared";
+
 // Individual ride types without a common interface
 class UberX {
 	private distance: number;
@@ -34,7 +36,7 @@ class UberBlack {
 // Special fare calculator that handles additional charges
 class FareCalculator {
 	calculateTotalFare(
-		rideType: string,
+		rideType: RideType,
 		distance: number,
 		isPeakHours: boolean = false,
 		isAirportPickup: boolean = false,
@@ -43,9 +45,9 @@ class FareCalculator {
 		let totalFare = 0;
 
 		// Calculate base ride fare
-		if (rideType === "UberX") {
+		if (rideType === RideType.UberX) {
 			totalFare = 2.5 + distance * 1.5;
-		} else if (rideType === "UberBlack") {
+		} else if (rideType === RideType.UberBlack) {
 			totalFare = 5 + distance * 2.5;
 		} else {
 			throw new Error("Unknown ride type");
@@ -69,7 +71,7 @@ class FareCalculator {
 	}
 
 	getDescription(
-		rideType: string,
+		rideType: RideType,
 		distance: number,
 		isPeakHours: boolean = false,
 		isAirportPickup: boolean = false,
@@ -96,7 +98,7 @@ class FareCalculator {
 // Corporate package handling requires special case logic
 class CorporatePackageCalculator {
 	calculatePackageFare(
-		rides: Array<{ type: string; distance: number }>,
+		rides: Array<{ type: RideType; distance: number }>,
 		hasDiscount: boolean
 	): number {
 		let totalFare = 0;
@@ -106,8 +108,8 @@ class CorporatePackageCalculator {
 			totalFare += fareCalculator.calculateTotalFare(
 				ride.type,
 				ride.distance,
-				ride.type === "UberX", // Assume UberX has peak hour surcharge for this example
-				ride.type === "UberBlack" // Assume UberBlack has airport fee for this example
+				ride.type === RideType.UberX, // Assume UberX has peak hour surcharge for this example
+				ride.type === RideType.UberBlack // Assume UberBlack has airport fee for this example
 			);
 		}
 
@@ -121,23 +123,41 @@ class CorporatePackageCalculator {
 
 // Client code
 function mainWithoutComposite() {
+	const uberX = new UberX(10);
+	const uberBlack = new UberBlack(10);
+
 	const fareCalculator = new FareCalculator();
 	const corporateCalculator = new CorporatePackageCalculator();
 
-	// Calculate individual rides
-	const uberXFare = fareCalculator.calculateTotalFare("UberX", 10);
+	// Calculate individual rides - not fancy
+	//uberX
+	console.log(`UberX Fare: $${uberX.calculateFare().toFixed(2)}`);
+	console.log(`UberX Description: ${uberX.getDescription()}`);
+	console.log("---------------");
+
+	// uberBlack
+	console.log(`UberBlack Fare: $${uberBlack.calculateFare().toFixed(2)}`);
+	console.log(`UberBlack Description: ${uberBlack.getDescription()}`);
+	console.log("---------------");
+
+	// Calculate individual rides with fare calculator - fancier
+	const uberXFare = fareCalculator.calculateTotalFare(RideType.UberX, 10);
 	console.log(`UberX Fare: $${uberXFare.toFixed(2)}`);
 	console.log(
-		`UberX Description: ${fareCalculator.getDescription("UberX", 10)}`
+		`UberX Description: ${fareCalculator.getDescription(RideType.UberX, 10)}`
 	);
 	console.log("---------------");
 
 	// Calculate a ride with peak hour surcharge
-	const peakHourRideFare = fareCalculator.calculateTotalFare("UberX", 10, true);
+	const peakHourRideFare = fareCalculator.calculateTotalFare(
+		RideType.UberX,
+		10,
+		true
+	);
 	console.log(`Peak Hour Ride Fare: $${peakHourRideFare.toFixed(2)}`);
 	console.log(
 		`Peak Hour Ride Description: ${fareCalculator.getDescription(
-			"UberX",
+			RideType.UberX,
 			10,
 			true
 		)}`
@@ -146,7 +166,7 @@ function mainWithoutComposite() {
 
 	// Calculate an airport pickup with premium ride
 	const airportRideFare = fareCalculator.calculateTotalFare(
-		"UberBlack",
+		RideType.UberBlack,
 		10,
 		false,
 		true
@@ -154,7 +174,7 @@ function mainWithoutComposite() {
 	console.log(`Airport Ride Fare: $${airportRideFare.toFixed(2)}`);
 	console.log(
 		`Airport Ride Description: ${fareCalculator.getDescription(
-			"UberBlack",
+			RideType.UberBlack,
 			10,
 			false,
 			true
@@ -165,8 +185,8 @@ function mainWithoutComposite() {
 	// Calculate a corporate package with multiple rides
 	const corporatePackageFare = corporateCalculator.calculatePackageFare(
 		[
-			{ type: "UberX", distance: 10 },
-			{ type: "UberBlack", distance: 10 },
+			{ type: RideType.UberX, distance: 10 },
+			{ type: RideType.UberBlack, distance: 10 },
 		],
 		true
 	);

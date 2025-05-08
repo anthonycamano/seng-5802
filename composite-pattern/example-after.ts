@@ -1,9 +1,4 @@
-enum RideType {
-	UberX = "UberX",
-	UberBlack = "UberBlack",
-	UberPool = "UberPool",
-	UberXL = "UberXL",
-}
+import { RideType } from "./shared";
 
 // Component: The base interface for all ride components
 interface RideComponent {
@@ -36,6 +31,25 @@ class SingleRide implements RideComponent {
 
 	getDescription(): string {
 		return `${this.rideType} - ${this.distance}km`;
+	}
+}
+
+// Leaf: Specific ride pricing adjustments
+class RideSurcharge implements RideComponent {
+	private amount: number;
+	private reason: string;
+
+	constructor(reason: string, amount: number) {
+		this.reason = reason;
+		this.amount = amount;
+	}
+
+	calculateFare(): number {
+		return this.amount;
+	}
+
+	getDescription(): string {
+		return `${this.reason} ($${this.amount.toFixed(2)})`;
 	}
 }
 
@@ -77,26 +91,6 @@ class CompositeRide implements RideComponent {
 	}
 }
 
-// Leaf: Specific ride pricing adjustments
-class RideSurcharge implements RideComponent {
-	private amount: number;
-	private reason: string;
-
-	constructor(reason: string, amount: number) {
-		this.reason = reason;
-		this.amount = amount;
-	}
-
-	calculateFare(): number {
-		return this.amount;
-	}
-
-	getDescription(): string {
-		return `${this.reason} ($${this.amount.toFixed(2)})`;
-	}
-}
-
-// Client code that uses the composite pattern
 function mainWithComposite() {
 	// Create individual ride types
 	const uberX = new SingleRide(RideType.UberX, 10, 2.5, 1.5); // 10km ride
@@ -121,11 +115,18 @@ function mainWithComposite() {
 	corporatePackage.add(standardRideWithSurge);
 	corporatePackage.add(premiumAirportRide);
 
-	// Calculate and display fares for different scenarios
+	// How different scenarios may play out
+	// Leaf: UberX
 	console.log(`UberX Fare: $${uberX.calculateFare().toFixed(2)}`);
 	console.log(`UberX Description: ${uberX.getDescription()}`);
 	console.log("---------------");
 
+	// Leaf: UberBlack
+	console.log(`UberBlack Fare: $${uberBlack.calculateFare().toFixed(2)}`);
+	console.log(`UberBlack Description: ${uberBlack.getDescription()}`);
+	console.log("---------------");
+
+	// Composite: standardRideWithSurge
 	console.log(
 		`Standard Ride with Surge Fare: $${standardRideWithSurge
 			.calculateFare()
@@ -136,6 +137,7 @@ function mainWithComposite() {
 	);
 	console.log("---------------");
 
+	// Composite: premiumAirportRide
 	console.log(
 		`Premium Airport Ride Fare: $${premiumAirportRide
 			.calculateFare()
@@ -146,6 +148,7 @@ function mainWithComposite() {
 	);
 	console.log("---------------");
 
+	// Composite: corporatePackage
 	console.log(
 		`Corporate Package Total Fare: $${corporatePackage
 			.calculateFare()
@@ -155,7 +158,7 @@ function mainWithComposite() {
 		`Corporate Package Description: ${corporatePackage.getDescription()}`
 	);
 
-	// Demonstrate how to modify a composite structure dynamically
+	// New case where we want to modify an element, in this case a composite
 	console.log("\nModifying the Corporate Package...");
 	const specialDiscount = new RideSurcharge("Corporate Discount", -15); // Negative value for discount
 	corporatePackage.add(specialDiscount);
