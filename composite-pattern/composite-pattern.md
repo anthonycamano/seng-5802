@@ -1,6 +1,6 @@
 # Composite Pattern
 
-[uml diagram for the composite pattern]{../images/composte-pattern.png}
+[uml diagram for the composite pattern](../images/composte-pattern.png)
 
 ## What is the composite pattern?
 
