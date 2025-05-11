@@ -131,7 +131,11 @@ class CorporatePackageCalculator {
 	}
  ```
 
-## add in the output from running the code
+## Output -- Before
+
+```
+
+```
 
 ## What is the solution?
 
@@ -200,7 +204,7 @@ class CompositeRide implements RideComponent {
 
 In main() we see how everything is simplified. We are still able to create individual rides using SingleRide and any additional objects that can affect the fare or description can be instantiated with RideSurcharge. Also, we are still able to get the fares/descriptions of the single rides we create, but we're also able to get that information from the composite rides, thanks to the shared interface.
 
-## Output
+## Output -- After
 
 ```
 
