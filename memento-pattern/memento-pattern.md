@@ -1,6 +1,6 @@
 # Memento Pattern
 
-![uml diagram for the memento pattern](../images//memento-pattern.png)
+![uml diagram for the memento pattern](../images/memento-pattern.png)
 
 ## What is the memento pattern?
 
@@ -17,6 +17,8 @@ The memento pattern in most helpful when...
 - you want to maintin encapsulation when preserving state history
 
 ## Background
+
+At my current role, one of the projects that I have spent a lot of time on revolves around users entering in many materials into a database. This is one small feature and was completed really early on in the project as it was essential for the features that came after it. This "Add Material" feature works well, but almost a year later, we have started to get user feedback that they would like some kind of undo/redo button. While we don't really have the time to go an implement something right now, this writeup serves to hint at a possible solution that leverages the memento design pattern.
 
 ## What kind of problem is it solving?
 
