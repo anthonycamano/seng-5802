@@ -27,7 +27,7 @@ During my time at Loyola University Chicago, I spent a lot of time trying to fin
 
 ## What kind of problem is it solving?
 
-The composite pattern is first and foremost a structural design pattern and should be considered when your program can be modeled into a tree-like structure. For example, take the sample code in [before.ts](./before.ts). We have individual classes for the different ride types, in this case an UberX and UberBlack, with their own implementations of calculateFare() and getDescription(). 
+The composite pattern is first and foremost a structural design pattern and should be considered when your program can be modeled into a tree-like structure. For example, take the sample code in [before.ts](./before.ts). We have individual classes for the different ride types, in this case an UberX and UberBlack, with their own implementations of calculateFare() and getDescription().
 
 ```typescript
 class UberX {
@@ -55,86 +55,101 @@ This works at a basic level when that is all the client needs, but we begin to s
 
 ```typescript
 class FareCalculator {
-		calculateTotalFare(
-			rideType: RideType,
-			distance: number,
-			isPeakHours: boolean = false,
-			isAirportPickup: boolean = false,
-			hasSpecialDiscount: boolean = false
-		): number {
-			let totalFare = 0;
+	calculateTotalFare(
+		rideType: RideType,
+		distance: number,
+		isPeakHours: boolean = false,
+		isAirportPickup: boolean = false,
+		hasSpecialDiscount: boolean = false
+	): number {
+		let totalFare = 0;
 
-			// Calculate base ride fare
-			if (rideType === RideType.UberX) {
-				totalFare = 2.5 + distance * 1.5;
-			} else if (rideType === RideType.UberBlack) {
-				totalFare = 5 + distance * 2.5;
-			} else {
-				throw new Error("Unknown ride type");
-			}
-
-			// Add surcharges
-			if (isPeakHours) {
-				totalFare += 3.5;
-			}
-
-			if (isAirportPickup) {
-				totalFare += 5;
-			}
-
-			// Apply discount
-			if (hasSpecialDiscount) {
-				totalFare -= 15;
-			}
-
-			return totalFare;
+		// Calculate base ride fare
+		if (rideType === RideType.UberX) {
+			totalFare = 2.5 + distance * 1.5;
+		} else if (rideType === RideType.UberBlack) {
+			totalFare = 5 + distance * 2.5;
+		} else {
+			throw new Error("Unknown ride type");
 		}
 
-		getDescription(
-			rideType: RideType,
-			distance: number,
-			isPeakHours: boolean = false,
-			isAirportPickup: boolean = false,
-			hasSpecialDiscount: boolean = false
-		): string {
-			// similar to above method...
+		// Add surcharges
+		if (isPeakHours) {
+			totalFare += 3.5;
 		}
+
+		if (isAirportPickup) {
+			totalFare += 5;
+		}
+
+		// Apply discount
+		if (hasSpecialDiscount) {
+			totalFare -= 15;
+		}
+
+		return totalFare;
 	}
+
+	getDescription(
+		rideType: RideType,
+		distance: number,
+		isPeakHours: boolean = false,
+		isAirportPickup: boolean = false,
+		hasSpecialDiscount: boolean = false
+	): string {
+		// similar to above method...
+	}
+}
 ```
 
- We must also consider special cases, shown in the sample code as a corporate package. This tries implement a fare calculation based on multiple rides. This also works... but what if we need more special cases? Is adding more special cases really the best solution?
+We must also consider special cases, shown in the sample code as a corporate package. This tries implement a fare calculation based on multiple rides. This also works... but what if we need more special cases? Is adding more special cases really the best solution?
 
- ```typescript
+```typescript
 class CorporatePackageCalculator {
-		calculatePackageFare(
-			rides: Array<{ type: RideType; distance: number }>,
-			hasDiscount: boolean
-		): number {
-			let totalFare = 0;
-			const fareCalculator = new FareCalculator();
+	calculatePackageFare(
+		rides: Array<{ type: RideType; distance: number }>,
+		hasDiscount: boolean
+	): number {
+		let totalFare = 0;
+		const fareCalculator = new FareCalculator();
 
-			for (const ride of rides) {
-				totalFare += fareCalculator.calculateTotalFare(
-					ride.type,
-					ride.distance,
-					ride.type === RideType.UberX, // Assume UberX has peak hour surcharge for this example
-					ride.type === RideType.UberBlack // Assume UberBlack has airport fee for this example
-				);
-			}
-
-			if (hasDiscount) {
-				totalFare -= 15;
-			}
-
-			return totalFare;
+		for (const ride of rides) {
+			totalFare += fareCalculator.calculateTotalFare(
+				ride.type,
+				ride.distance,
+				ride.type === RideType.UberX, // Assume UberX has peak hour surcharge for this example
+				ride.type === RideType.UberBlack // Assume UberBlack has airport fee for this example
+			);
 		}
+
+		if (hasDiscount) {
+			totalFare -= 15;
+		}
+
+		return totalFare;
 	}
- ```
+}
+```
 
 ## Output -- Before
 
 ```
-
+UberX Fare: $17.50
+UberX Description: UberX - 10km
+---------------
+UberBlack Fare: $30.00
+UberBlack Description: UberBlack - 10km
+---------------
+UberX Fare: $17.50
+UberX Description: UberX - 10km
+---------------
+Peak Hour Ride Fare: $21.00
+Peak Hour Ride Description: UberX - 10km + Peak Hours Surcharge ($3.50)
+---------------
+Airport Ride Fare: $35.00
+Airport Ride Description: UberBlack - 10km + Airport Fee ($5.00)
+---------------
+Corporate Package Fare: $41.00
 ```
 
 ## What is the solution?
@@ -149,13 +164,13 @@ A better solution would be to implement the composite design pattern. Before we 
 The implementation of the composite pattern can be seen in [after.ts](./after.ts). The first thing to notice is the inclusion of the shared interface, RideComponent, for all of the ride components.
 
 ```typescript
-	interface RideComponent {
-		calculateFare(): number;
-		getDescription(): string;
-	}
+interface RideComponent {
+	calculateFare(): number;
+	getDescription(): string;
+}
 ```
 
-Next are the implementations of two leaf components, SingleRide and RideSurcharge, which stemmed from the components that affected the fare in both the FareCalculator and the CorporatePackageCalculator. 
+Next are the implementations of two leaf components, SingleRide and RideSurcharge, which stemmed from the components that affected the fare in both the FareCalculator and the CorporatePackageCalculator.
 
 ```typescript
 	class SingleRide implements RideComponent {
@@ -207,7 +222,24 @@ In main() we see how everything is simplified. We are still able to create indiv
 ## Output -- After
 
 ```
+UberX Fare: $17.50
+UberX Description: UberX - 10km
+---------------
+UberBlack Fare: $30.00
+UberBlack Description: UberBlack - 10km
+---------------
+Standard Ride with Surge Fare: $21.00
+Standard Ride with Surge Description: Standard Ride with Surge [UberX - 10km + Peak Hours ($3.50)]
+---------------
+Premium Airport Ride Fare: $35.00
+Premium Airport Ride Description: Premium Airport Pickup [UberBlack - 10km + Airport Fee ($5.00)]
+---------------
+Corporate Package Total Fare: $56.00
+Corporate Package Description: Corporate Package [Standard Ride with Surge [UberX - 10km + Peak Hours ($3.50)] + Premium Airport Pickup [UberBlack - 10km + Airport Fee ($5.00)]]
 
+Modifying the Corporate Package...
+Updated Corporate Package Fare: $41.00
+Updated Corporate Package Description: Corporate Package [Standard Ride with Surge [UberX - 10km + Peak Hours ($3.50)] + Premium Airport Pickup [UberBlack - 10km + Airport Fee ($5.00)] + Corporate Discount ($-15.00)]
 ```
 
 ## Helpful links

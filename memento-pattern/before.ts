@@ -50,7 +50,7 @@ namespace WithoutMemento {
 			this._color = color;
 		}
 
-		isTransparent(): boolean {
+		get isTransparent(): boolean {
 			return this._transparent;
 		}
 		set setTransparent(transparent: boolean) {
